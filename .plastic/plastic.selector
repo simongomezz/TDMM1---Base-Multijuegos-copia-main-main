@@ -1,0 +1,4 @@
+repository "TDMM1 - BASE@PPATMM@cloud"
+  path "/"
+    br "/main"
+    co "/main"
