@@ -136,7 +136,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e497ac1e06495c049b05ac054f71db3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprites:
+  normalSprites:
   - {fileID: 21300000, guid: 4c4d6f2249fabff4182c22643040745c, type: 3}
   - {fileID: 21300000, guid: 31953446c99e49744b046d85571152af, type: 3}
+  closeSprites:
+  - {fileID: 21300000, guid: 3950268ed688f584797e056eefafde4e, type: 3}
+  - {fileID: 21300000, guid: 167eda1485d3ad84fb7682adfb4351b4, type: 3}
   animationSpeed: 0.5

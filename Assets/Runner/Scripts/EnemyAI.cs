@@ -70,38 +70,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            destroyMe();
-            Player player = other.GetComponent<Player>();
-            if (player != null)
-            {
-                // Solo inflige daño si el jugador no está atrapado e inmune
-                if (!player.isCaught && !player.inmunity)
-                {
-                    player.Damage(dmg);
-                }
-                else
-                {
-                    Debug.Log("El jugador está inmune o atrapado, no se aplica daño.");
-                }
-                
-                // Decrementa la vida del enemigo si es necesario
-                if (life > 1)
-                {
-                    life--;
-                }
-
-                if (life <= 0)
-                {
-                    destroyMe();
-                }
-            }
-        }
-    }
-
     private void destroyMe()
     {
         // Remueve al enemigo de la lista de enemigos activos
