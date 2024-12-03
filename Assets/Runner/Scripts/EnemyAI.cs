@@ -8,7 +8,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float speed = 3.0f;
 
     [Header("Configuración de estadísticas")]
-    [SerializeField] private int dmg = 1;
     [SerializeField] private int life = 1;
     public float score = 10f;
 

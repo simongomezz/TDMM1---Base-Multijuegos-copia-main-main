@@ -213,13 +213,23 @@ public class Player : MonoBehaviour
             StartCaughtState();
             Debug.Log("Colisión con muro, inmunidad ignorada.");
         }
-        else if (other.CompareTag("Enemy") && !inmunity)
+        else if (other.CompareTag("Enemy"))
         {
-            StartCaughtState();
-            Debug.Log("Colisión con enemigo sin inmunidad.");
+            // Desactivar el objeto enemigo sin importar la inmunidad
+            other.gameObject.SetActive(false);  // Desactiva el objeto sin destruirlo
+        
+            if (!inmunity)
+            {
+                // Solo llamar a StartCaughtState si no tiene inmunidad
+                StartCaughtState();
+                Debug.Log("Colisión con enemigo sin inmunidad.");
+            }
+            else
+            {
+                Debug.Log("Colisión con enemigo, pero el jugador tiene inmunidad.");
+            }
         }
     }
-
     public void StartCaughtState()
     {
         isCaught = true;
