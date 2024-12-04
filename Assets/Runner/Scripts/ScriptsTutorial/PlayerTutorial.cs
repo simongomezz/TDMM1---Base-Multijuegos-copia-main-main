@@ -25,8 +25,13 @@ public class PlayerTutorial : MonoBehaviour
 
     private TutorialSpawnManager spawnManager;
 
+    // Referencia al Animator del jugador
+    private Animator playerAnimator;
+
     // Referencia al script MultiSenseOSCReceiver
     public MultiSenseOSCReceiver oscReceiver; // Asignar en el Inspector
+
+    private float previousZPosition; // Para almacenar la posición Z del frame anterior
 
     private void Start()
     {
@@ -36,6 +41,14 @@ public class PlayerTutorial : MonoBehaviour
 
         tutorialUIController = Object.FindFirstObjectByType<TutorialUIController>();
         spawnManager = Object.FindFirstObjectByType<TutorialSpawnManager>();
+
+        playerAnimator = GetComponent<Animator>();
+        if (playerAnimator != null)
+        {
+            playerAnimator.enabled = false; // Desactiva el Animator inicialmente
+        }
+
+        previousZPosition = transform.position.z; // Almacena la posición Z inicial
 
         if (caughtText != null) caughtText.gameObject.SetActive(false);
     }
@@ -62,14 +75,28 @@ public class PlayerTutorial : MonoBehaviour
         }
         else
         {
+            CheckMovement();
             MoveForward();
             HandleLaneChange();
         }
     }
 
+    private void CheckMovement()
+    {
+        // Compara la posición Z actual con la posición Z del frame anterior
+        bool isMoving = Mathf.Abs(transform.position.z - previousZPosition) > 0.01f;
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.enabled = isMoving; // Activa o desactiva el Animator dependiendo del movimiento
+        }
+
+        previousZPosition = transform.position.z; // Actualiza la posición Z para el siguiente frame
+    }
+
     private void MoveForward()
     {
-        if (!TutorialWall.isPaused) // Solo avanzar si el juego no está en pausa
+        if (!TutorialWall.isPaused && primerCambioCarril) // Solo avanzar si el juego no está en pausa y primerCambioCarril es true
         {
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
         }

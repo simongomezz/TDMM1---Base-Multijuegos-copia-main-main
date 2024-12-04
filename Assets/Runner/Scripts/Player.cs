@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     [Header("Configuración de Pared")]
     [SerializeField] private float stopPositionZ = 300f;
     private bool canMoveForward = true;
-    //public TextMeshProUGUI inmunityText;
 
     [Header("Configuración de inmunidad")]
     public Image inmunityImage; // Nueva referencia a la imagen de inmunidad
@@ -37,7 +36,7 @@ public class Player : MonoBehaviour
     private float releaseTimeLimit = 3.0f;
     private float releaseTimer;
     private int requiredKeyPresses = 3;
-    //public TextMeshProUGUI caughtText;
+    public Image caughtImage; // Imagen que aparecerá cuando el jugador esté atrapado
 
     // Movimiento entre carriles
     public float carrilIzquierdo;
@@ -52,6 +51,11 @@ public class Player : MonoBehaviour
     // Referencia al script MultiSenseOSCReceiver
     public MultiSenseOSCReceiver oscReceiver; // Asegúrate de asignarlo en el Inspector
 
+    [Header("Animator del Jugador")]
+    public Animator playerAnimator; // Referencia al Animator del jugador
+
+    private float previousZPosition; // Posición Z anterior para calcular si el jugador se mueve
+
     private void Start()
     {
         life = config.vidas;
@@ -62,9 +66,10 @@ public class Player : MonoBehaviour
         carrilIzquierdo = carrilCentro - movementDistance;
         carrilDerecho = carrilCentro + movementDistance;
 
-        //if (inmunityText != null) inmunityText.gameObject.SetActive(false);
-        //if (caughtText != null) caughtText.gameObject.SetActive(false);
+        previousZPosition = transform.position.z; // Inicializar la posición Z anterior
+
         if (inmunityImage != null) inmunityImage.gameObject.SetActive(false); // Asegurarse de que la imagen está desactivada al inicio
+        if (caughtImage != null) caughtImage.gameObject.SetActive(false); // Asegurarse de que la imagen está desactivada al inicio
     }
 
     private void Update()
@@ -72,6 +77,12 @@ public class Player : MonoBehaviour
         if (isCaught)
         {
             HandleCaughtState();
+
+            // Mostrar imagen de atrapado
+            if (caughtImage != null && !caughtImage.gameObject.activeSelf)
+            {
+                caughtImage.gameObject.SetActive(true);
+            }
 
             // Obtener los valores del acelerómetro del script MultiSenseOSCReceiver
             float accelX = oscReceiver.accelX; // Aceleración en X
@@ -89,9 +100,29 @@ public class Player : MonoBehaviour
         }
         else
         {
+            // Ocultar imagen de atrapado si no está atrapado
+            if (caughtImage != null && caughtImage.gameObject.activeSelf)
+            {
+                caughtImage.gameObject.SetActive(false);
+            }
+
             Movement();
-            // Lógica de movimiento del jugador...
         }
+
+        UpdateAnimatorState(); // Llamar a la función para actualizar el estado del Animator
+    }
+
+    private void UpdateAnimatorState()
+    {
+        float currentZPosition = transform.position.z; // Obtener la posición Z actual
+        bool isMovingForward = Mathf.Abs(currentZPosition - previousZPosition) > 0.01f; // Determinar si está avanzando
+
+        if (playerAnimator != null)
+        {
+            playerAnimator.enabled = isMovingForward; // Activar o desactivar el Animator
+        }
+
+        previousZPosition = currentZPosition; // Actualizar la posición Z anterior
     }
 
     private void Movement()
@@ -176,9 +207,6 @@ public class Player : MonoBehaviour
             keyPressCount++;
             Debug.Log("Presionaste E, conteo: " + keyPressCount);
         }
-
-        //caughtText.text = $"¡Estás atrapado! Presiona E {requiredKeyPresses - keyPressCount} veces más";
-
         if (keyPressCount >= requiredKeyPresses)
         {
             ReleasePlayer(); // Liberar con la tecla E
@@ -193,11 +221,6 @@ public class Player : MonoBehaviour
     {
         isCaught = false;
         keyPressCount = 0;
-
-        //if (caughtText != null)
-        //{
-        //    caughtText.gameObject.SetActive(false);
-        //}
     }
 
     private void LoseGame()
@@ -215,12 +238,10 @@ public class Player : MonoBehaviour
         }
         else if (other.CompareTag("Enemy"))
         {
-            // Desactivar el objeto enemigo sin importar la inmunidad
             other.gameObject.SetActive(false);  // Desactiva el objeto sin destruirlo
         
             if (!inmunity)
             {
-                // Solo llamar a StartCaughtState si no tiene inmunidad
                 StartCaughtState();
                 Debug.Log("Colisión con enemigo sin inmunidad.");
             }
@@ -235,25 +256,18 @@ public class Player : MonoBehaviour
         isCaught = true;
         keyPressCount = 0;
         releaseTimer = releaseTimeLimit;
-        //caughtText.gameObject.SetActive(true);
-        //Debug.Log("¡Estás atrapado! Presiona E para liberarte.");
     }
 
     public IEnumerator ActivarInmunidad(float duracion)
     {
         inmunity = true;
 
-       // if (inmunityText != null) inmunityText.gameObject.SetActive(true);
         if (inmunityImage != null) inmunityImage.gameObject.SetActive(true);
 
         float tiempoRestante = duracion;
 
         while (tiempoRestante > 0)
         {
-           // if (inmunityText != null)
-            //{
-                //inmunityText.text = "Inmunidad activa: " + tiempoRestante.ToString("F1") + " segundos";
-            //}
             yield return new WaitForSeconds(0.1f);
             tiempoRestante -= 0.1f;
         }
