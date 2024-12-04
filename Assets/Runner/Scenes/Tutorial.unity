@@ -642,9 +642,10 @@ MonoBehaviour:
   instruccionesImagen: {fileID: 332516680}
   marcoInstrucciones: {fileID: 152444253}
   secuenciaSpritesInicial:
-  - {fileID: 21300000, guid: 7206f45beeae7f44b9d83fcf289a1756, type: 3}
-  - {fileID: 21300000, guid: 39263ea4a2a83514cb079e4be2df0e75, type: 3}
-  - {fileID: 21300000, guid: 32ee7e360bcbdd54e864cf0dd63ec8d0, type: 3}
+  - {fileID: 21300000, guid: 00b3ecf3277794e4cb7247167cc2a2f6, type: 3}
+  - {fileID: 21300000, guid: e534d648cf64fdf4294926ee895b0585, type: 3}
+  - {fileID: 21300000, guid: 753e123c66e721741b1ce34444543d69, type: 3}
+  - {fileID: 21300000, guid: 0edc26caedfeccb41a2042df20547bdd, type: 3}
   tiempoCambioSpriteInicial: 0.5
   imagenAdicional: {fileID: 763308236}
   pulsacionVelocidad: 1
